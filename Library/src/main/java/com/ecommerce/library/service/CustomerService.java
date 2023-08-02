@@ -10,6 +10,8 @@ public interface CustomerService {
 
     Customer findByUsername(String username);
 
+    boolean existByPhoneNo(String phoneNo);
+
     Customer save(CustomerDto customerDto);
 
     List<Customer> findAllCustomer();
@@ -22,4 +24,6 @@ public interface CustomerService {
     Page<Customer> searchCustomer(int pageNo,String keyword);
 
     Customer findById(Long id);
+
+    void enableAfterOtp(Customer customer);
 }

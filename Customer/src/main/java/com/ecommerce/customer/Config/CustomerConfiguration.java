@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,7 +40,7 @@ public class CustomerConfiguration {
 
          http
                  .authorizeHttpRequests(authorize -> authorize
-                         .requestMatchers("/*","/static/**","/css/**","/fonts/**","/images/Banner-image/**","/js/**","/vendor/**","/Users/**","/images/**")
+                         .requestMatchers("/static/**","/css/**","/fonts/**","/images/Banner-image/**","/js/**","/vendor/**","/images/**","/product-view/**","/index/**","/register")
                          .permitAll()
                          .requestMatchers("/shop/**")
                          .hasAuthority("CUSTOMER")
@@ -52,7 +53,14 @@ public class CustomerConfiguration {
                          .defaultSuccessUrl("/index")
                          .permitAll()
                  )
-                 .logout((login)->login
+                 .sessionManagement((session)->session
+                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                         .invalidSessionUrl("/login")
+                         .maximumSessions(1)
+                         .maxSessionsPreventsLogin(false)
+                 )
+                 .logout((logout)->logout
+                         .deleteCookies("JSESSIONID")
                          .invalidateHttpSession(true)
                          .clearAuthentication(true)
                          .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

@@ -18,18 +18,22 @@ public class CustomerServiceConfig implements UserDetailsService {
     @Autowired
     private  CustomerRepository customerRepository;
 
+    Customer customer;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customer customer=customerRepository.findByUsername(username);
+         customer=customerRepository.findByUsername(username);
 
         if(customer==null){
             throw  new UsernameNotFoundException("Invalid username or password");
         }
-        return new User(customer.getUsername(),
-                customer.getPassword(),
-                customer.getRoles().stream()
-                        .map(role -> new SimpleGrantedAuthority(role.getName()))
-                        .collect(Collectors.toList())
-        );
+//        return new User(customer.getUsername(),
+//                customer.getPassword(),
+//                customer.getRoles().stream()
+//                        .map(role -> new SimpleGrantedAuthority(role.getName()))
+//                        .collect(Collectors.toList())
+//        );
+        return new CustomerDetails(customer);
     }
+
+
 }

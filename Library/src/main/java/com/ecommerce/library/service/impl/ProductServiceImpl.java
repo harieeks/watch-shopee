@@ -32,6 +32,13 @@ public class ProductServiceImpl implements ProductService {
         return productDtoList;
     }
 
+    @Override
+    public List<ProductDto> listViewProduct() {
+        List<Product> products=productRepository.listViewProduct();
+        List<ProductDto> productDtoListView=transfer(products);
+        return productDtoListView;
+    }
+
     private List<ProductDto> transfer(List<Product> products) {
         List<ProductDto> productDtoList=new ArrayList<>();
         for (Product product:products){
@@ -90,17 +97,15 @@ public class ProductServiceImpl implements ProductService {
             if(imageProduct==null){
                 product.setImage(null);
             }else {
-              if(imageUpload.checkExisted(imageProduct)==false){
+              if(imageUpload.checkExisted(imageProduct)==false) {
                   imageUpload.upload(imageProduct);
-                 // String dbimage=imageUpload.uploadImage(imageProduct);
+                  // String dbimage=imageUpload.uploadImage(imageProduct);
                   product.setImage(imageProduct.getOriginalFilename());
                   System.out.println("ImageUploaded");
               }
-                   // String dbimage = imageUpload.uploadImage(imageProduct);
-                    product.setImage(imageProduct.getOriginalFilename());
                   System.out.println("ImageExisted");
-
             }
+            product.setImage(imageProduct.getOriginalFilename());
             product.setName(productDto.getName());
             product.setDescription(productDto.getDescription());
             product.setCategory(productDto.getCategory());
@@ -157,5 +162,10 @@ public class ProductServiceImpl implements ProductService {
         productDto.set_activated(product.is_activated());
         productDto.set_deleted(product.is_deleted());
         return productDto;
+    }
+
+    @Override
+    public Product findById(Long id) {
+        return productRepository.getById(id);
     }
 }

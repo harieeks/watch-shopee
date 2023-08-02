@@ -12,10 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -37,11 +34,14 @@ public class AuthController {
     @GetMapping("/register")
     public String getRegister(Model model){
         model.addAttribute("customerDto",new CustomerDto());
-        model.addAttribute("twilioDto",new TwilioDto());
+       // model.addAttribute("twilioDto",new TwilioDto());
         return "register";
     }
 
-
+    @GetMapping("/otpVerification")
+    public String otpVerification(){
+        return "otpLogin";
+    }
 
     @PostMapping("/register-new")
     public String newRegister(@Valid @ModelAttribute("customerDto")CustomerDto customerDto,
@@ -51,6 +51,7 @@ public class AuthController {
         try {
             if(result.hasErrors()){
                 model.addAttribute("customerDto",customerDto);
+                model.addAttribute("error","Something Went wrong please try again");
                 System.out.println("HAS ERROR IN RESULT");
                 return "register";
             }
@@ -61,6 +62,13 @@ public class AuthController {
                 System.out.println("HAS ERROR IN EMAIL");
                 return "register";
             }
+
+            if(customerService.existByPhoneNo(customerDto.getPhoneNo())){
+                model.addAttribute("customerDto",customerDto);
+                model.addAttribute("emailError","This Phone Number is all ready used");
+                return "register";
+            }
+
             if(customerDto.getPassword().equals(customerDto.getRepeatPassword())){
                 customerDto.setPassword(passwordEncoder.encode(customerDto.getPassword()));
                Customer customerNew= customerService.save(customerDto);
@@ -73,16 +81,11 @@ public class AuthController {
                 otpNew.setPhoneNo(customerDto.getPhoneNo());
                 otpService.save(otpNew);
                 System.out.println("OTP NUMBER"+otp);
-               // TwilioDto twilioDto=new TwilioDto();
 
-
-
-
-
-                System.out.println("Customer provided username"+customerDto.getPhoneNo());
-               // System.out.println("NUmber set in twiliodto"+twilioDto.getPhoneNO());
-                model.addAttribute("customerId",customerNew.getId());
                 model.addAttribute("twilio",new TwilioDto());
+                Long customerId=customerNew.getId();
+                model.addAttribute("id",customerId);
+                model.addAttribute("phoneNumber",customerDto.getPhoneNo());
                 return "otpLogin";
 
             }else{
@@ -98,32 +101,35 @@ public class AuthController {
         return "register";
     }
 
-    @PostMapping("/otp-verification/{id}")
-    public String otpVerification(@ModelAttribute("twilio")TwilioDto twilioDto,
-                                  @PathVariable("id")Long id,
+    @PostMapping ("/otp-doVerification")
+    public String otpVerification(@RequestParam("id") Long id,
+                                  @ModelAttribute("twilio")TwilioDto twilioDto,
                                   RedirectAttributes attributes){
 
         try {
+
+            System.out.println("Customer id"+id);
             Customer customer=customerService.findById(id);
-            Otp otp=otpService.findByNumber(customer.getPhoneNumber());
-            System.out.println("This is my phone number"+customer.getPhoneNumber());
-            System.out.println("This is your otp from database"+otp.getOtp());
-            System.out.println("User Entered otp"+twilioDto.getOtp());
+            System.out.println("Customer from db"+customer);
+            String phNO= customer.getPhoneNumber();
+            Otp otp= otpService.findByNumber(phNO);
 
             if(otp.getOtp().equals(twilioDto.getOtp())){
-                attributes.addFlashAttribute("success","Otp Verified Success fully");
-                //otpService.deleteOtp(otp.getId());
-                //customerService.save(customerDto);
-                System.out.println("otp verified successfully");
+
+                customer.setEnabled(true);
+                customerService.enableAfterOtp(customer);
                 return "login";
-            }else {
-                attributes.addFlashAttribute("error","Otp you provided is in correct");
-                return "redirect:/otpLogin";
+            }
+            else{
+                attributes.addFlashAttribute("errorotp","Incorrect otp ");
+                return "otpLogin";
             }
         }catch (Exception e){
             e.printStackTrace();
-            attributes.addFlashAttribute("error","Something went wrong ");
+            attributes.addFlashAttribute("errorotp","Something went wrong");
+            return "register";
         }
-        return "otpLogin";
     }
+
+
 }

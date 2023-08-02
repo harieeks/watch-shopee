@@ -30,13 +30,18 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public boolean existByPhoneNo(String phoneNo) {
+        return customerRepository.existsByPhoneNumber(phoneNo);
+    }
+
+    @Override
     public Customer save(CustomerDto customerDto) {
         Customer customer=new Customer();
         customer.setName(customerDto.getName());
         customer.setUsername(customerDto.getUsername());
         customer.setPassword(customerDto.getPassword());
         customer.setPhoneNumber(customerDto.getPhoneNo());
-        customer.setEnabled(true);
+        customer.setEnabled(false);
         customer.setDeleted(false);
         customer.setRoles(Arrays.asList(roleRepository.findByName("CUSTOMER")));
         return customerRepository.save(customer);
@@ -80,5 +85,10 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer findById(Long id) {
        return customerRepository.getById(id);
+    }
+
+    @Override
+    public void enableAfterOtp(Customer customer) {
+        customerRepository.save(customer);
     }
 }

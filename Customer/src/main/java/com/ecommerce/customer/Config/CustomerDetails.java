@@ -2,18 +2,23 @@ package com.ecommerce.customer.Config;
 
 import com.ecommerce.library.model.Customer;
 import com.ecommerce.library.model.Role;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+
 public class CustomerDetails implements UserDetails {
 
     private Customer customer;
+    public CustomerDetails(Customer customer){
+        this.customer=customer;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -51,6 +56,6 @@ public class CustomerDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return customer.isEnabled();
     }
 }

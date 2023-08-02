@@ -4,14 +4,20 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
+
 @Data
+@Component
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "customers",uniqueConstraints = @UniqueConstraint(columnNames = {"username","phone_number"}))
-public class Customer {
+public class Customer implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +37,13 @@ public class Customer {
     private String password;
     private boolean isDeleted;
     private boolean isEnabled;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Address> addresses;
+
+    @OneToOne(mappedBy = "customer")
+    private ShoppingCart shoppingCart;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Order> orders;
 }
