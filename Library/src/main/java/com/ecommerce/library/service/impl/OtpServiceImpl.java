@@ -27,12 +27,12 @@ public class OtpServiceImpl {
 
     public String generateOtp(String phoneNo){
         PhoneNumber to=new PhoneNumber("+919207692551");
-        PhoneNumber from=new PhoneNumber("+14847598085");
+        PhoneNumber from=new PhoneNumber("+12565307035");
         String otp=getRandomOtp(phoneNo);
         String otpMsg="Dear customer this is your otp for COZASTORE login "+otp+" use this";
-        Message
-                .creator(to,from,otpMsg)
-                .create();
+//        Message
+//                .creator(to,from,otpMsg)
+//                .create();
         return otp;
     }
 
