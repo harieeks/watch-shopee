@@ -1,9 +1,7 @@
 package com.ecommerce.library.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -17,7 +15,7 @@ public class Address implements Serializable {
     @Column(name = "address_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id",referencedColumnName = "customer_id")
     private Customer customer;
     private String houseName;
@@ -26,4 +24,6 @@ public class Address implements Serializable {
     private String state;
     private String country;
     private Long pinCode;
+
+
 }

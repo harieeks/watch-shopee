@@ -29,8 +29,8 @@ public class OtpServiceImpl {
         PhoneNumber to=new PhoneNumber("+919207692551");
         PhoneNumber from=new PhoneNumber("+14847598085");
         String otp=getRandomOtp(phoneNo);
-//        String otpMsg="Dear customer this is your otp"+otp+"use this";
-//        Message message=Message
+        String otpMsg="Dear customer this is your otp for COZASTORE login "+otp+" use this";
+//        Message
 //                .creator(to,from,otpMsg)
 //                .create();
         return otp;
@@ -53,6 +53,7 @@ public class OtpServiceImpl {
     public Otp findByNumber(String phoneNo){
         return otpRepository.findByPhoneNo(phoneNo);
     }
+
 
 
 

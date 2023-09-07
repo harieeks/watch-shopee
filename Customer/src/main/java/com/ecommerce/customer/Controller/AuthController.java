@@ -4,6 +4,7 @@ import com.ecommerce.library.Dto.CustomerDto;
 import com.ecommerce.library.Dto.TwilioDto;
 import com.ecommerce.library.model.Customer;
 import com.ecommerce.library.model.Otp;
+import com.ecommerce.library.repository.CustomerRepository;
 import com.ecommerce.library.service.CustomerService;
 import com.ecommerce.library.service.impl.OtpServiceImpl;
 import jakarta.validation.Valid;
@@ -24,6 +25,8 @@ public class AuthController {
     private OtpServiceImpl otpService;
     @Autowired
     private  BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private CustomerRepository customerRepository;
 
 
     @GetMapping("/login")
@@ -48,13 +51,15 @@ public class AuthController {
                               BindingResult result,
                               Model model
                               ){
+        System.out.println("registration");
         try {
-            if(result.hasErrors()){
-                model.addAttribute("customerDto",customerDto);
-                model.addAttribute("error","Something Went wrong please try again");
-                System.out.println("HAS ERROR IN RESULT");
-                return "register";
-            }
+//            if(result.hasErrors()){
+//                model.addAttribute("customerDto",customerDto);
+//                model.addAttribute("error","Something Went wrong please try again");
+//                System.out.println("HAS ERROR IN RESULT");
+//                return "register";
+//            }
+
             Customer customer=customerService.findByUsername(customerDto.getUsername());
             if(customer!=null){
                 model.addAttribute("customerDto",customerDto);
@@ -115,10 +120,12 @@ public class AuthController {
             Otp otp= otpService.findByNumber(phNO);
 
             if(otp.getOtp().equals(twilioDto.getOtp())){
-
+                
                 customer.setEnabled(true);
                 customerService.enableAfterOtp(customer);
-                return "login";
+                System.out.println(customer+"this is my customer");
+                otpService.deleteOtp(otp.getId());
+                return "redirect:/login";
             }
             else{
                 attributes.addFlashAttribute("errorotp","Incorrect otp ");
@@ -128,6 +135,91 @@ public class AuthController {
             e.printStackTrace();
             attributes.addFlashAttribute("errorotp","Something went wrong");
             return "register";
+        }
+    }
+
+    @GetMapping("/forgot-password")
+    public String getForgotPassword(){
+        return "forgot-password";
+    }
+
+    @GetMapping("/otp-verification")
+    public String otpVerification(Model model){
+        return "otp-verification";
+    }
+
+    @PostMapping("/reset-user-password")
+    public String resetUserPassword(@RequestParam("phoneNumber")String phoneNo,
+                                    Model model
+    ){
+        try {
+            String otp=otpService.generateOtp(phoneNo);
+            Otp newOtp=new Otp();
+            newOtp.setOtp(otp);
+            newOtp.setPhoneNo(phoneNo);
+            otpService.save(newOtp);
+            System.out.println("otp sended"+phoneNo);
+            model.addAttribute("phoneNumber",phoneNo);
+            return "otp-verification";
+        }catch (Exception e){
+            e.printStackTrace();
+            return "reset-password";
+        }
+    }
+
+    @PostMapping("/verify-forgotPassword-otp")
+    public String verifyForgotPasswordOtp(@RequestParam("otp") String otp,
+                                          @RequestParam("phoneNo")String phoneNo,
+                                          RedirectAttributes attributes
+    ){
+        try {
+            Otp otp1=otpService.findByNumber(phoneNo);
+            if(otp1.getOtp().equals(otp)){
+                otpService.deleteOtp(otp1.getId());
+                System.out.println("Password Verified");
+                return "reset-password";
+            }else {
+                attributes.addFlashAttribute("error","Wrong otp");
+                return "redirect:/forgot-password";
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return "redirect:/forgot-password";
+        }
+    }
+    @GetMapping("/reset-password")
+    public String resetPassword(){
+        return "reset-password";
+    }
+
+    @PostMapping("/final-verification")
+    public String finalVerification(@RequestParam("email")String email,
+                                    @RequestParam("password")String password,
+                                    @RequestParam("confirmPassword")String confirmPassword,
+                                    RedirectAttributes attributes
+    ){
+        try {
+
+            Customer customer=customerService.findByUsername(email);
+            System.out.println("my email"+customer.getUsername());
+            if(!customer.getUsername().equals(email)){
+                attributes.addFlashAttribute("error","Incorrect email id");
+                return "reset-password";
+            }
+            if(!password.equals(confirmPassword)){
+                attributes.addFlashAttribute("error","Password is incorrect");
+                return "reset-password";
+            }
+            customer.setPassword(passwordEncoder.encode(password));
+            customerRepository.save(customer);
+            Otp otp=otpService.findByNumber(customer.getPhoneNumber());
+            otpService.deleteOtp(otp.getId());
+            attributes.addFlashAttribute("success","Password Changed success fully");
+            return "redirect:/login";
+        }catch (Exception e){
+            e.printStackTrace();
+            attributes.addFlashAttribute("error","Something went wrong please try again");
+            return "reset-password";
         }
     }
 

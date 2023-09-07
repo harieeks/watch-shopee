@@ -1,9 +1,12 @@
 package com.ecommerce.library.Dto;
 
 import com.ecommerce.library.model.Category;
+import com.ecommerce.library.model.Image;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,5 +21,5 @@ public class ProductDto {
     private Category category;
     private boolean is_deleted;
     private boolean is_activated;
-    private String image;
+    private List<Image> images;
 }

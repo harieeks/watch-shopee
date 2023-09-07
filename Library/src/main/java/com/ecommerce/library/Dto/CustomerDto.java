@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CustomerDto {
 
+    private Long id;
     @Size(min = 3,max = 10,message = "Invalid Name")
     private String name;
     private String username;

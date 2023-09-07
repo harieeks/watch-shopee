@@ -2,6 +2,7 @@ package com.ecommerce.admin.admin.Controller;
 
 import com.ecommerce.library.Dto.ProductDto;
 import com.ecommerce.library.model.Category;
+import com.ecommerce.library.model.Image;
 import com.ecommerce.library.model.Product;
 import com.ecommerce.library.service.CategoryService;
 import com.ecommerce.library.service.ProductService;
@@ -28,23 +29,45 @@ public class ProductController {
         if(principal==null){
             return "redirect:/login";
         }
-        List<ProductDto> productDtoList=productService.findAll();
-        model.addAttribute("products",productDtoList);
-        model.addAttribute("size",productDtoList.size());
+        //List<ProductDto> productDtoList=productService.findAll();
+        List<Product> productList=productService.findAllProduct();
+        model.addAttribute("products",productList);
+        model.addAttribute("size",productList.size());
+//        for(ProductDto productDto : productDtoList){
+//            List<String> image=productDto.getImages();
+//            for (String image1 = image){
+//                System.out.println("images of product"+image1);
+//            }
+//
+//        }
         return "product";
     }
 
     @GetMapping("/add-product")
     public String addProduct(Model model){
         List<Category> categories=categoryService.findAllByIsActivated();
+        model.addAttribute("categoryNew",new Category());
         model.addAttribute("category",categories);
         model.addAttribute("product",new ProductDto());
+
       return "add-product";
+    }
+    @PostMapping("/add-product-category")
+    public String addingCategoryWithProduct(@ModelAttribute("categoryNew") Category category,
+                                            RedirectAttributes attributes
+    ){
+        try {
+            categoryService.save(category);
+            attributes.addFlashAttribute("success","Category Added");
+        }catch (Exception e){
+            attributes.addFlashAttribute("failed","Failed to Add");
+        }
+        return "redirect:/add-product";
     }
 
     @PostMapping("/save-product")
     public String saveProduct(@ModelAttribute("product")ProductDto productDto,
-                              @RequestParam(value = "imageProduct",required = true)MultipartFile imageProduct,
+                              @RequestParam(value = "imageProduct",required = true)List<MultipartFile> imageProduct,
                               RedirectAttributes attributes
                               ){
         try {
@@ -71,7 +94,7 @@ public class ProductController {
     @PostMapping("/doUpdate-product/{id}")
     public String doUpdate(@PathVariable("id")Long id,
                            @ModelAttribute("product")ProductDto productDto,
-                           @RequestParam("imageProduct")MultipartFile imageProduct,
+                           @RequestParam("imageProduct")List<MultipartFile> imageProduct,
                            RedirectAttributes attributes
     ){
         try {
@@ -85,17 +108,17 @@ public class ProductController {
         return "redirect:/product";
     }
 
-    @GetMapping("/delete-product/{id}")
-    public String deleteProduct(@PathVariable("id") Long id,RedirectAttributes attributes){
-        try {
-            productService.deleteById(id);
-            attributes.addFlashAttribute("success","Deleted Success fully");
-        }catch (Exception e){
-            e.printStackTrace();
-            attributes.addFlashAttribute("error","Failed to Delete");
-        }
-        return "redirect:/product";
-    }
+//    @GetMapping("/delete-product/{id}")
+//    public String deleteProduct(@PathVariable("id") Long id,RedirectAttributes attributes){
+//        try {
+//            productService.deleteById(id);
+//            attributes.addFlashAttribute("success","Deleted Success fully");
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            attributes.addFlashAttribute("error","Failed to Delete");
+//        }
+//        return "redirect:/product";
+//    }
 
     @GetMapping("/disable-product/{id}")
     public String disableProduct(@PathVariable("id")Long id,RedirectAttributes attributes){

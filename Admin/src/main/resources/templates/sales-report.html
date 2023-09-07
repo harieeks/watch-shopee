@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Sales report</title>
+</head>
+<body>
+<h3>Sales Report</h3>
+<hr>
+<div th:each="entry : ${cancelReport}">
+    <p>
+        <span th:text="${entry.values[0]}"></span> orders
+        <span th:text="${entry.values()}"></span>: <!-- Access the first value in the entry (should be the month) -->
+
+        <!-- Access the second value in the entry (should be the count) -->
+    </p>
+</div>
+
+</body>
+</html>

@@ -32,27 +32,22 @@ public class CategoryController {
     @ExceptionHandler(value = CategoryAllreadyExist.class)
 
     @PostMapping("/add-category")
-    public String add(@ModelAttribute("categoryNew")Category category,
-                      RedirectAttributes attributes){
+    public String add(@ModelAttribute("categoryNew") Category category,
+                      RedirectAttributes attributes) {
         try {
-            List<Category> oldCategory=categoryService.findAll();
-            if(oldCategory.contains(category.getName())){
-                System.out.println(category.getName()+"NotAdded");
-                throw new CategoryAllreadyExist();
-            }else{
-                categoryService.save(category);
-                System.out.println("Added");
-                attributes.addFlashAttribute("success","Added Successfully");
+            Category category1=categoryService.save(category);
+            if(category1 !=null){
+                attributes.addFlashAttribute("success", "Added Successfully");
+            }else {
+                attributes.addFlashAttribute("error", "Failed to add");
             }
-        }catch (CategoryAllreadyExist p){
-            attributes.addFlashAttribute("error","This Category all ready exist");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            attributes.addFlashAttribute("failed","Failed to add");
+            attributes.addFlashAttribute("error", "Failed to add");
         }
         return "redirect:/category";
     }
+
 
     @RequestMapping(value = "/findById", method = {RequestMethod.PUT,RequestMethod.GET})
     @ResponseBody
@@ -63,12 +58,12 @@ public class CategoryController {
     @GetMapping("/update-category")
     public String updateCategory(Category category,RedirectAttributes attributes){
         try {
-            categoryService.update(category);
+           categoryService.update(category);
             attributes.addFlashAttribute("Success","Updated successfully");
 
         }catch (Exception e){
             e.printStackTrace();
-            attributes.addFlashAttribute("Failed","Failed to update");
+            attributes.addFlashAttribute("error","Failed to update");
         }
         return "redirect:/category";
     }

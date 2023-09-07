@@ -39,8 +39,13 @@ public class CustomerConfiguration {
          AuthenticationManager authenticationManager= authenticationManagerBuilder.build();
 
          http
+                 .csrf((csrf) -> csrf.disable())
                  .authorizeHttpRequests(authorize -> authorize
-                         .requestMatchers("/static/**","/css/**","/fonts/**","/images/Banner-image/**","/js/**","/vendor/**","/images/**","/product-view/**","/index/**","/register")
+                         .requestMatchers("/static/**","/css/**","/fonts/**","/images/Banner-image/**","/js/**","/vendor/**","/images/**",
+                                 "/product-view/**","/index/**","/register","/register-new","/otp-doVerification","/forgot-password",
+                                 "/reset-user-password","/verify-forgotPassword-otp","otp-verification","/reset-password","/final-verification",
+                                 "/shop/add-order","/smart-watch","/digital-watch","/analog-watch","/search-analog","/search-digital","/search-smart"
+                         )
                          .permitAll()
                          .requestMatchers("/shop/**")
                          .hasAuthority("CUSTOMER")
@@ -59,13 +64,13 @@ public class CustomerConfiguration {
                          .maximumSessions(1)
                          .maxSessionsPreventsLogin(false)
                  )
-                 .logout((logout)->logout
-                         .deleteCookies("JSESSIONID")
-                         .invalidateHttpSession(true)
-                         .clearAuthentication(true)
-                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                         .logoutSuccessUrl("/login?logout")
-                         .permitAll()
+                 .logout(
+                         logout -> logout
+                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                                 .deleteCookies("JSESSIONID")
+                                 .clearAuthentication(true)
+                                 .invalidateHttpSession(true)
+                                 .permitAll()
                  )
                  .authenticationManager(authenticationManager);
          return http.build();

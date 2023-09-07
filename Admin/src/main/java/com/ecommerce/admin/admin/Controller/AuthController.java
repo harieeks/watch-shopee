@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
 @Controller
 public class AuthController {
 
@@ -26,14 +28,8 @@ public class AuthController {
     @Autowired
     private  BCryptPasswordEncoder passwordEncoder;
 
-    @RequestMapping("/index")
-    public String getHome(){
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null || authentication instanceof AnonymousAuthenticationToken){
-            return "redirect:/login";
-        }
-        return "index";
-    }
+
+
 
     @GetMapping("/login")
     public String getLogin(){
@@ -45,12 +41,12 @@ public class AuthController {
 //        model.addAttribute("adminDto",new AdminDto());
 //        return "register";
 //    }
-
+//
 //    @GetMapping("/forgot-password")
 //    public String forgotPassword(Model model){
 //        return "forgot-password";
 //    }
-
+//
 //    @PostMapping("/register-new")
 //    public String addNewAdmin(@Valid @ModelAttribute("adminDto")AdminDto adminDto,
 //                              BindingResult result,

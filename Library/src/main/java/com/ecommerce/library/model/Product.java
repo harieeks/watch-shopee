@@ -5,12 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "products",uniqueConstraints = @UniqueConstraint(columnNames = {"name","image"}))
-public class Product {
+@Table(name = "products",uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
+public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +24,10 @@ public class Product {
     private double costPrice;
     private double salePrice;
     private int currentQuantity;
-//    @Lob
-//    @Column(columnDefinition = "bytea")
-    private String image;
+
+    @OneToMany(mappedBy = "product")
+    private List<Image> image;
+
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id",referencedColumnName = "category_id")
     private Category category;

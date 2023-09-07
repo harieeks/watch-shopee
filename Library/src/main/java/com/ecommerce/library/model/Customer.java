@@ -38,7 +38,7 @@ public class Customer implements Serializable {
     private boolean isDeleted;
     private boolean isEnabled;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer",fetch = FetchType.EAGER)
     private List<Address> addresses;
 
     @OneToOne(mappedBy = "customer")
@@ -46,4 +46,11 @@ public class Customer implements Serializable {
 
     @OneToMany(mappedBy = "customer")
     private List<Order> orders;
+
+    @OneToOne(mappedBy = "customer")
+    private Wishlist wishlist;
+
+    @OneToOne(mappedBy = "customer")
+    private Wallet wallet;
+
 }

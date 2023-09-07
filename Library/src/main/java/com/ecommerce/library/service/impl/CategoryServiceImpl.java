@@ -19,15 +19,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category save(Category category) {
-        try {
+    public Category save(Category category)  {
+
             Category categorySave=new Category(category.getName());
             return categoryRepository.save(categorySave);
-
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @Override
@@ -38,15 +33,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category update(Category category) {
+
         Category categoryUpdate=null;
-        try {
             categoryUpdate=categoryRepository.findById(category.getId()).get();
             categoryUpdate.setName(category.getName());
-            categoryUpdate.setIs_activated(category.getIs_activated());
-            categoryUpdate.setIs_deleted(category.getIs_deleted());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+            categoryUpdate.setIs_activated(true);
+            categoryUpdate.setIs_deleted(false);
         return categoryRepository.save(categoryUpdate);
     }
 

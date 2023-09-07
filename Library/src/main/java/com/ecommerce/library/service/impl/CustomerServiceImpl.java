@@ -2,8 +2,10 @@ package com.ecommerce.library.service.impl;
 
 import com.ecommerce.library.Dto.CustomerDto;
 import com.ecommerce.library.model.Customer;
+import com.ecommerce.library.model.Wallet;
 import com.ecommerce.library.repository.CustomerRepository;
 import com.ecommerce.library.repository.RoleRepository;
+import com.ecommerce.library.repository.WalletRepository;
 import com.ecommerce.library.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class CustomerServiceImpl implements CustomerService {
     private  CustomerRepository customerRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private WalletRepository walletRepository;
     @Override
     public Customer findByUsername(String username) {
         return customerRepository.findByUsername(username);
@@ -44,7 +48,13 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setEnabled(false);
         customer.setDeleted(false);
         customer.setRoles(Arrays.asList(roleRepository.findByName("CUSTOMER")));
-        return customerRepository.save(customer);
+
+        Wallet wallet=new Wallet();
+        wallet.setAmount(0.0);
+        Customer customer1=customerRepository.save(customer);
+        wallet.setCustomer(customer1);
+        walletRepository.save(wallet);
+        return customer1;
     }
 
     @Override
@@ -89,6 +99,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void enableAfterOtp(Customer customer) {
+        customer.setEnabled(true);
         customerRepository.save(customer);
+    }
+
+    @Override
+    public Customer changePassword(Customer customer) {
+        return customerRepository.save(customer);
     }
 }

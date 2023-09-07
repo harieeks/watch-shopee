@@ -26,4 +26,5 @@ public interface CustomerService {
     Customer findById(Long id);
 
     void enableAfterOtp(Customer customer);
+    Customer changePassword(Customer customer);
 }
