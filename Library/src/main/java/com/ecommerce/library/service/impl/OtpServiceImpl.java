@@ -30,9 +30,9 @@ public class OtpServiceImpl {
         PhoneNumber from=new PhoneNumber("+14847598085");
         String otp=getRandomOtp(phoneNo);
         String otpMsg="Dear customer this is your otp for COZASTORE login "+otp+" use this";
-//        Message
-//                .creator(to,from,otpMsg)
-//                .create();
+        Message
+                .creator(to,from,otpMsg)
+                .create();
         return otp;
     }
 
