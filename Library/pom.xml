@@ -91,6 +91,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>e-commerce-springboot-aws</finalName>
 	</build>
 
 </project>

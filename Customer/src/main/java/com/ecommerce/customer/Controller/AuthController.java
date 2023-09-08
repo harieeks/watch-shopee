@@ -125,7 +125,7 @@ public class AuthController {
                 customerService.enableAfterOtp(customer);
                 System.out.println(customer+"this is my customer");
                 otpService.deleteOtp(otp.getId());
-                return "redirect:/login";
+                return "redirect:/index";
             }
             else{
                 attributes.addFlashAttribute("errorotp","Incorrect otp ");

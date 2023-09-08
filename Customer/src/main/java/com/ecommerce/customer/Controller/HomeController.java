@@ -40,10 +40,9 @@ public class HomeController {
 
 
     @GetMapping("/index")
-    public String getIndex(Model model, Principal principal, HttpSession session){
+    public String getIndex(Model model, Principal principal){
         boolean name=false;
         if(principal !=null){
-            session.setAttribute("username",principal.getName());
              name=true;
             model.addAttribute("name",name);
         }
