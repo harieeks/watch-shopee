@@ -44,7 +44,7 @@ public class AdminConfiguration  {
 
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/*", "/static/**","/images/**","/register","/register-new","/assets/**","/css/**",
+                        .requestMatchers("/**", "/static/**","/images/**","/register","/register-new","/assets/**","/css/**",
                                 "/images/**","/js/**","/libs/**","/scss/**")
                         .permitAll()
                         .requestMatchers("/admin/**")

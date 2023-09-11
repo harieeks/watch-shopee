@@ -41,7 +41,7 @@ public class CustomerConfiguration {
          http
                  .csrf((csrf) -> csrf.disable())
                  .authorizeHttpRequests(authorize -> authorize
-                         .requestMatchers("/static/**","/css/**","/fonts/**","/images/Banner-image/**","/js/**","/vendor/**","/images/**",
+                         .requestMatchers("/**","/static/**","/css/**","/fonts/**","/images/Banner-image/**","/js/**","/vendor/**","/images/**",
                                  "/product-view/**","/index/**","/register","/register-new","/otp-doVerification","/forgot-password",
                                  "/reset-user-password","/verify-forgotPassword-otp","otp-verification","/reset-password","/final-verification",
                                  "/shop/add-order","/smart-watch","/digital-watch","/analog-watch","/search-analog","/search-digital","/search-smart"

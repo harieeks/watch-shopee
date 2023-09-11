@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.ByteArrayInputStream;
 import java.security.Principal;
@@ -29,7 +30,7 @@ public class HomeController {
     @Autowired
     private InvoiceService invoiceService;
 
-    @RequestMapping("/index")
+    @RequestMapping(value= {"/","/index"},method = RequestMethod.GET)
     public String getHome(Principal principal, Model model){
         try {
             if(principal==null){
