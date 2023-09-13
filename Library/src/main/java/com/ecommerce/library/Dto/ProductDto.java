@@ -2,6 +2,8 @@ package com.ecommerce.library.Dto;
 
 import com.ecommerce.library.model.Category;
 import com.ecommerce.library.model.Image;
+import com.ecommerce.library.model.Product;
+import com.ecommerce.library.model.ProductFeedback;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,4 +24,5 @@ public class ProductDto {
     private boolean is_deleted;
     private boolean is_activated;
     private List<Image> images;
+    List<ProductFeedback> feedbacks;
 }

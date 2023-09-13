@@ -1,14 +1,14 @@
 package com.ecommerce.library.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -33,4 +33,7 @@ public class Product implements Serializable {
     private Category category;
     private boolean is_deleted;
     private boolean is_activated;
+
+    @OneToMany(mappedBy = "product")
+    List<ProductFeedback> productFeedbacks;
 }

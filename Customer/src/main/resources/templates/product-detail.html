@@ -374,6 +374,21 @@
       </div>
     </div>
 
+    <div class="row flex-w flex-m m-r-20 m-tb-5">
+      <form th:action="@{/add-feedback}" method="post">
+        <input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5" type="text" name="feedback" placeholder="Write a feedback" required>
+        <input type="hidden" th:value="${product.id}" name="feedbackProductId" >
+
+        <div class=" flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5">
+          <button type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+    <div  class="container-fluid text-center alert alert-info" th:each="productFeedback : ${feedback}" style="width: 1000px; height: 50px; border-radius: 15px;">
+      <p th:text="${productFeedback.review}"></p>
+    </div>
+
+
 <!--    <div class="bor10 m-t-50 p-t-43 p-b-40">-->
 <!--      &lt;!&ndash; Tab01 &ndash;&gt;-->
 <!--      <div class="tab01">-->

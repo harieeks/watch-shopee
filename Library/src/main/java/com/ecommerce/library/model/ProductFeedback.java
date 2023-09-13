@@ -1,32 +1,31 @@
 package com.ecommerce.library.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
-@Table(name = "product_image")
-public class Image {
+public class ProductFeedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
+    @Column(name = "feedback_id")
     private Long id;
 
     @Override
     public String toString() {
-        return "Image{" +
-                "imagePath='" + imagePath + '\'' +
+        return "ProductFeedback{" +
+                "review='" + review + '\'' +
                 '}';
     }
 
-    private String imagePath;
+    private String review;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id",referencedColumnName = "product_id")
+    @JoinColumn(name="product_id",referencedColumnName = "product_id")
     private Product product;
 }

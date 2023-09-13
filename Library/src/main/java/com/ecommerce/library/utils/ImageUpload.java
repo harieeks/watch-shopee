@@ -11,8 +11,11 @@ import java.nio.file.StandardCopyOption;
 @Component
 public class ImageUpload {
 
-    private final String UPLOAD_FOLDER="C:\\Users\\hp\\Downloads\\Ecommerce-watchshopee\\Admin\\src\\main\\resources\\static\\images\\Image-product\\";
-    private final String customer_product="C:\\Users\\hp\\Downloads\\Ecommerce-watchshopee\\Customer\\src\\main\\resources\\static\\images\\image-product\\";
+    String rootPath = System.getProperty("user.home");
+
+    String UPLOAD_FOLDER = rootPath +  File.separator +"Downloads"+ File.separator + "Ecommerce-watchshopee" + File.separator + "Admin" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator + "images" + File.separator + "Image-product";
+    String customer_product = rootPath + File.separator +"Downloads"+  File.separator + "Ecommerce-watchshopee" + File.separator + "Customer" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator + "images" + File.separator + "image-product";
+
     private final String banner_admin="C:\\Users\\hp\\Downloads\\Ecommerce-watchshopee\\Admin\\src\\main\\resources\\static\\images\\Banner-image\\";
     private final String banner_customer="C:\\Users\\hp\\Downloads\\Ecommerce-watchshopee\\Customer\\src\\main\\resources\\static\\images\\Banner-image\\";
 

@@ -1,12 +1,10 @@
 package com.ecommerce.customer.Controller;
 
 import com.ecommerce.customer.Config.CustomerServiceConfig;
+import com.ecommerce.library.Dto.ImageDto;
 import com.ecommerce.library.Dto.ProductDto;
 import com.ecommerce.library.model.*;
-import com.ecommerce.library.service.BannerService;
-import com.ecommerce.library.service.CustomerService;
-import com.ecommerce.library.service.ImageService;
-import com.ecommerce.library.service.ProductService;
+import com.ecommerce.library.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
@@ -35,6 +33,8 @@ public class HomeController {
     private CustomerService customerService;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private ProductFeedbackService productFeedbackService;
 
 
     @RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
@@ -84,7 +84,13 @@ public class HomeController {
         try{
             ProductDto productDto=productService.getById(id);
             List<Image> images=imageService.findImageByProductId(id);
+//            ProductDto productDto1=imageService.productImages(id);
+//            List<Image> images=productDto1.getImages();
+
             int productQuantity=productDto.getCurrentQuantity();
+            ProductDto feedbackDto=productFeedbackService.getProductFeedback(id);
+            List<ProductFeedback> feedbacks=feedbackDto.getFeedbacks();
+
 
             if(principal !=null){
                 Customer customer=customerService.findByUsername(principal.getName());
@@ -106,6 +112,11 @@ public class HomeController {
             } else {
                 model.addAttribute("cartItem",0);
                 model.addAttribute("wishlist",0);
+            }
+            if(feedbacks != null){
+                model.addAttribute("feedback",feedbacks);
+            }else{
+                model.addAttribute("feedback","No feedbacks for this product");
             }
 
             model.addAttribute("product",productDto);
@@ -498,6 +509,26 @@ public class HomeController {
             e.printStackTrace();
         }
         return "smart-watch";
+    }
+
+    @RequestMapping(value = "/add-feedback",method = {RequestMethod.POST,RequestMethod.GET})
+    public String addFeedback(Principal principal,
+                              @RequestParam("feedbackProductId")Long id,
+                              @RequestParam("feedback")String feedback,
+                              RedirectAttributes attributes
+                              ){
+
+        try {
+            if(principal == null){
+                return "redirect:/login";
+            }
+            productFeedbackService.saveReview(feedback,id);
+            attributes.addFlashAttribute("success","Thanks for your feedback");
+            return "redirect:/product-view?id="+id;
+        }catch (Exception e){
+            attributes.addFlashAttribute("error","An error occur while saving your feedback");
+            return "redirect:/product-view?id="+id;
+        }
     }
 
 

@@ -11,4 +11,5 @@ public interface ImageService {
 
     Image saveImage(MultipartFile imageProduct);
     List<Image> findImageByProductId(Long id);
+    ProductDto productImages(Long id);
 }
